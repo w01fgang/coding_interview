@@ -1,7 +1,11 @@
 export const resolvers = {
   Query: {
     orders: () => ({
-      edges: [],
+      edges: [
+        {
+          node: { id: "1", customer: "test", amount: 1, createdAt: new Date() },
+        },
+      ],
       pageInfo: {
         endCursor: null,
         hasNextPage: false,
@@ -9,4 +13,4 @@ export const resolvers = {
       totalCount: 0,
     }),
   },
-}; 
+};
