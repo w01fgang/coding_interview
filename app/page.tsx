@@ -1,6 +1,10 @@
 "use client";
-import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
+import {
+  useQuery,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { useState } from "react";
 
 const queryClient = new QueryClient();
 
@@ -47,9 +51,9 @@ type OrdersData = {
 };
 
 async function fetchOrders(after: string | null) {
-  const res = await fetch('/api/graphql', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  const res = await fetch("/api/graphql", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: ORDERS_QUERY,
       variables: { first: 10, after },
@@ -63,7 +67,7 @@ function Orders() {
   const [after, setAfter] = useState<string | null>(null);
   const [history, setHistory] = useState<(string | null)[]>([null]);
   const { data, isLoading, error, isFetching } = useQuery<OrdersData>({
-    queryKey: ['orders', after],
+    queryKey: ["orders", after],
     queryFn: () => fetchOrders(after),
   });
 
@@ -83,37 +87,58 @@ function Orders() {
     }
   };
 
-  if (isLoading) return <div className="flex justify-center items-center min-h-screen text-blue-600">Loading...</div>;
-  if (error) return <div className="flex justify-center items-center min-h-screen text-red-600">Error: {(error as Error).message}</div>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center min-h-screen text-blue-600">
+        Loading...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex justify-center items-center min-h-screen text-red-600">
+        Error: {(error as Error).message}
+      </div>
+    );
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Orders</h1>
       {isFetching && <div className="text-blue-600 mb-4">Loading...</div>}
-      <div className="text-lg font-semibold text-gray-600 mb-4">Total: {data?.totalCount}</div>
+      <div className="text-lg font-semibold text-gray-600 mb-4">
+        Total: {data?.totalCount}
+      </div>
       <ul className="space-y-3 mb-6">
         {data?.edges.map((edge: OrderEdge) => (
-          <li key={edge.node.id || edge.cursor} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <li
+            key={edge.node.id || edge.cursor}
+            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <div className="flex justify-between items-center">
-              <span className="font-semibold text-gray-800">{edge.node.customer}</span>
+              <span className="font-semibold text-gray-800">
+                {edge.node.customer}
+              </span>
               <div className="text-right">
-                <div className="text-lg font-bold text-green-600">${edge.node.amount}</div>
-                <div className="text-sm text-gray-500">{edge.node.createdAt}</div>
+                <div className="text-lg font-bold text-green-600">
+                  ${edge.node.amount}
+                </div>
+                <div className="text-sm text-gray-500">
+                  {edge.node.createdAt}
+                </div>
               </div>
             </div>
           </li>
         ))}
       </ul>
       <div className="flex justify-between items-center">
-        <button 
-          onClick={handlePrev} 
+        <button
+          onClick={handlePrev}
           disabled={history.length <= 1}
           className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
         >
           Previous
         </button>
-        <button 
-          onClick={handleNext} 
+        <button
+          onClick={handleNext}
           disabled={!data?.pageInfo.hasNextPage}
           className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
         >
